@@ -1,0 +1,63 @@
+========================================================================
+SAMMENDRAG AV GENAI-SAMTALE - INF201 DELIVERABLE 4
+========================================================================
+
+1. GJENNOMGANG AV OPPGAVETEKSTEN (deliverable_4.pdf)
+------------------------------------------------------------------------
+Opplastet oppgavetekst ble gjennomgatt for a oppsummere kravene til
+innleveringen (frist 27. november 2026):
+- Innleveringsformat: Python-skript (.py), Jupyter Notebook (.ipynb) med
+  pytest-output, PDF-eksport av notebooken, lenke til GitHub-repo med
+  requirements.txt og git_log.txt, diskusjon om bruk av GenAI
+- Oppgaveinnhold: Implementering og testing (med pytest) av to klasser:
+  Temperature (Task 1) og Fraction (Task 2).
+
+
+2. PLANLEGGING OG DESIGNGJENNOMGANG
+------------------------------------------------------------------------
+Det ble stilt 34 strukturerte sporsmal for a planlegge arkitektur,
+og kodepraksis.Folgende hovedomrader ble
+gjennomgatt:
+
+Task 1 - Temperature-klassen:
+- Arkitektur og validering:
+  * Lagre _value (float) og _unit (normalisert med .strip().upper()) i
+    brukerens opprinnelige enhet.
+  * Eksponere value og unit som read-only med @property.
+  * Samle enhetsvalidering i en hjelpemetode (_validate_unit).
+  * Sjekke absolutt nullpunkt samlet via to_kelvin().
+- Konverteringer og flyttall:
+  * Strukturere to_celsius, to_fahrenheit og to_kelvin direkte etter
+    formlene, og gjenbruke dem i convert_to.
+  * Beholde full presisjon internt og handtere avrundingsfeil med
+    toleransen 1e-9.
+- Tekst og sammenligninger:
+  * Utvetydig __repr__ og menneskelesbar __str__ formatert med :.2f.
+  * Sammenligne pa tvers av enheter via Kelvin med konsistent bruk av
+    1e-9-toleransen i alle seks operatorer (==, !=, <, <=, >, >=).
+  * Returnere NotImplemented ved sammenligning med feil type.
+
+Task 1 - Testing med pytest:
+- Bryte ned de seks testkravene i konkrete testfunksjoner.
+- Bruke pytest.raises for ValueError/AttributeError.
+- Bruke @pytest.mark.parametrize for referansepunkter og pytest.approx
+  for flyttallssammenligninger.
+- Skrive round-trip-test (C -> F -> K -> C) og teste NotImplemented ved
+  direkte kall pa dunder-metoder.
+
+Task 2 - Fraction-klassen:
+- Validering og forkorting:
+  * Sjekke at teller og nevner er int (og ikke bool).
+  * Kaste ValueError ved nevner <= 0.
+  * Forkorte broken automatisk i __init__ med math.gcd.
+- Sammenligning og dunder-metoder:
+  * Sammenligne broker eksakt med kryssmultiplikasjon (uten flyttall).
+  * Velge naturlige spesialmetoder (__str__, __repr__, __add__, __sub__,
+    __mul__, __truediv__).
+  * Handtere spesialtilfeller ved divisjon (deling pa null og flytting
+    av minustegn ved negativ nevner).
+
+Task 2 - Testing med pytest:
+- Sikre dekning av alle metoder, inkludert grensetilfeller som negative
+  tall, null, like broker skrevet ulikt og store tall.
+- Verifisere bade resultatverdi og forkorting etter regneoperasjoner.
